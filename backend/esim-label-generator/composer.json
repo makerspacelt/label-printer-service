@@ -1,0 +1,22 @@
+{
+  "name": "makerspacelt/esim-label-generator",
+  "description": "Library to generate different labels using ESIM language for thermal printer",
+  "keywords": ["esim", "label", "termo-print"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Makerspace.lt",
+      "email": "labas@makerspace.lt"
+    }
+  ],
+  "type": "library",
+  "require": {
+    "php": ">=5.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "Makerspacelt\\EsimLabelGernerator\\": "src/"
+    }
+  }
+}
+

@@ -1,0 +1,101 @@
+body {
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    background-color: #f8f9fa;
+    padding: 20px;
+}
+textarea, input, button {
+    font-size: 16px;
+}
+button {
+    padding: 0.5rem;
+}
+
+h1 {
+    color: #333;
+}
+label, .label {
+    display: block;
+    margin: 0.5rem 0;
+}
+#printer-config-container {
+    display: flex;
+    margin: 0.5rem 0;
+}
+.printer-config {
+    flex-shrink: 1;
+    flex-grow: 0;
+    margin-right: 1rem;
+    padding: 0.5rem;
+    border: 2px dashed #555;
+    cursor: pointer;
+}
+.printer-config:hover {
+    border-color: orange;
+}
+.printer-config-active {
+    border-color: black;
+    border-style: solid;
+    font-weight: bold;
+}
+.textarea-wrapper {
+    float: left;
+    vertical-align: top;
+}
+#label-text {
+    margin: 1rem 0;
+}
+.remove-label-btn {
+    display: none;
+    padding: 0 0.2rem;
+    background: white;
+    font-size: 1rem;
+    font-weight: bold;
+}
+#global-offset-container {
+    margin: 1rem 0;
+    display: none;
+}
+#renderings-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+#renderings-container > div {
+    flex: auto;
+    align-self: baseline;
+}
+#canvas-container {
+    display: none;
+    margin: 1rem 0;
+}
+#label-canvas {
+    border: 1px solid #ccc;
+    background-color: white;
+}
+#centering-container {
+    display: none;
+}
+#preview-container {
+    display: none;
+}
+#preview-img {
+    border: 1px solid #ccc;
+}
+#download-btn {
+    margin-top: 10px;
+}
+
+@font-face {
+  font-family: 'Source Sans Pro Regular';
+  src: url('fonts/SourceSansPro-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Source Sans Pro Bold';
+  src: url('fonts/SourceSansPro-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Source Sans Pro Black';
+  src: url('fonts/SourceSansPro-Black.ttf') format('truetype');
+}

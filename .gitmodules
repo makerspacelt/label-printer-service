@@ -1,0 +1,3 @@
+[submodule "esim-label-generator"]
+	path = esim-label-generator
+	url = https://github.com/makerspacelt/esim-label-generator.git

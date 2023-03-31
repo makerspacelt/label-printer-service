@@ -1,0 +1,16 @@
+[Unit]
+Description=Label printer and generator web service
+After=rfcomm0.service
+Wants=rfcomm0.service
+
+[Service]
+WorkingDirectory=/home/user/label-printer-service/backend
+User=user
+ExecStartPre=!/bin/sh -c '/usr/sbin/setcap CAP_NET_BIND_SERVICE+ep $(readlink -f /usr/bin/python)'
+ExecStart=/home/user/label-printer-service/venv/bin/python webservice.py
+Restart=always
+RestartSec=1s
+StartLimitIntervalSec=0
+
+[Install]
+WantedBy=multi-user.target

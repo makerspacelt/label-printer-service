@@ -1,0 +1,13 @@
+[Unit]
+Description=ESIM label printer web
+
+[Service]
+WorkingDirectory=/home/user/label-printer-service/backend/esim-label-generator
+User=user
+ExecStart=php -S 0.0.0.0:8080 post.php
+Restart=always
+RestartSec=1s
+StartLimitIntervalSec=0
+
+[Install]
+WantedBy=multi-user.target

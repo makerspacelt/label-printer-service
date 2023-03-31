@@ -1,0 +1,12 @@
+[Unit]
+Description=Bluetooth serial connection to the label printer
+Requires=bluetooth.service
+
+[Service]
+ExecStart=/usr/bin/rfcomm connect 0 EC:79:49:65:E2:10
+Restart=always
+RestartSec=20s
+StartLimitIntervalSec=0
+
+[Install]
+WantedBy=multi-user.target

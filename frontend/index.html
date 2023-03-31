@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Label Generator</title>
+        <link rel="stylesheet" type="text/css" href="main.css">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    </head>
+    <body>
+        <h1>Label Generator & Printer</h1>
+
+        <div id="printer-config-container"></div>
+
+        <div id="font-select-container">
+            <label>
+                Font: 
+                <select id="font-select"></select>
+            </label>
+        </div>
+
+        <div id="textareas-container">
+            <div class="textarea-wrapper">
+                <div class="label">
+                    <button class="remove-label-btn" title="remove label">×</button>
+                    <span class="textarea-label">Label Text:</span>
+                </div>
+                <textarea id="textarea-1" rows="4"></textarea>
+            </div>
+        </div>
+
+        <div style="clear:both;"></div>
+
+        <div id="global-offset-container">
+            <label class="form-label">
+                Space between labels:<br>
+                <input type="number" id="global-offset" value="20">
+            </label>
+        </div>
+
+        <div>
+            <button id="add-textarea">add label</button>
+            <button id="load-image">load image</button>
+            <br>
+            <button id="download-btn">Download PNG</button>
+            <button id="print-btn" class="btn-primary">Print Label</button>
+        </div>
+
+        <div id="renderings-container">
+            <div id="canvas-container">
+                <div class="label">
+                    Canvas - interact with text objects: drag / resize / rotate / select / edit (double click)
+                </div>
+                <canvas id="label-canvas"></canvas>
+                <div id="centering-container" class="label">Center selected object:
+                    <button id="centerh-btn">Horizontally</button>
+                    <button id="centerv-btn">Vertically</button>
+                </div>
+            </div>
+
+            <div id="preview-container">
+                <div class="label">
+                    Rendered label image
+                </div>
+                <img id="preview-img">
+            </div>
+        </div>
+        <script src="fabric.min.js"></script>
+    <script src="config.js"></script>
+    <script src="main.js"></script>
+    <script>
+        main(CONFIGS)
+    </script>
+</body>
+</html>
