@@ -84,10 +84,10 @@ async def get_status(request):
             'task_count': queue_brother.qsize(),
             'ok': os.path.exists(brother_dev),
         },
-        # 'esim': {
-        #     'task_count': queue_esim.qsize(),
-        #     'ok': os.path.exists(esim_dev),
-        # },
+        'esim': {
+            'task_count': queue_esim.qsize(),
+            'ok': os.path.exists(esim_dev),
+        },
     })
 
 
