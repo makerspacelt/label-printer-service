@@ -67,7 +67,7 @@ thread_brother = Thread(target=run_brother_thread, daemon=True)
 # thread_esim = Thread(target=run_esim_thread, daemon=True)
 
 thread_brother.start()
-thread_esim.start()
+# thread_esim.start()
 
 routes = web.RouteTableDef()
 
