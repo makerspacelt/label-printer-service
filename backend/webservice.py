@@ -3,7 +3,7 @@ from threading import Thread
 from brother_ptouch import serialcomm
 from time import sleep
 from traceback import format_exc
-import esim
+# import esim
 import io
 import queue
 import os
@@ -45,26 +45,26 @@ def run_brother_thread():
             sleep(retry_delay)
 
 
-def run_esim_thread():
-    while True:
-        try:
-            png_image_data = queue_esim.get()
-            print('run_esim_thread(): printing')
-            ep = esim.EsimPrint()
-            ep.set_copies(1)
-            print('preparing bytes')
-            esim_data = ep.print_bytes(png_image_data)
-            print('data:', esim_data)  # XXX
-            continue
+# def run_esim_thread():
+#     while True:
+#         try:
+#             png_image_data = queue_esim.get()
+#             print('run_esim_thread(): printing')
+#             ep = esim.EsimPrint()
+#             ep.set_copies(1)
+#             print('preparing bytes')
+#             esim_data = ep.print_bytes(png_image_data)
+#             print('data:', esim_data)  # XXX
+#             continue
 
-            with open(esim_dev, 'w') as f:
-                f.write(esim_data)
-        except Exception:
-            print('run_esim_thread() exception: ', format_exc())
+#             with open(esim_dev, 'w') as f:
+#                 f.write(esim_data)
+#         except Exception:
+#             print('run_esim_thread() exception: ', format_exc())
 
 
 thread_brother = Thread(target=run_brother_thread, daemon=True)
-thread_esim = Thread(target=run_esim_thread, daemon=True)
+# thread_esim = Thread(target=run_esim_thread, daemon=True)
 
 thread_brother.start()
 thread_esim.start()
@@ -84,10 +84,10 @@ async def get_status(request):
             'task_count': queue_brother.qsize(),
             'ok': os.path.exists(brother_dev),
         },
-        'esim': {
-            'task_count': queue_esim.qsize(),
-            'ok': os.path.exists(esim_dev),
-        },
+        # 'esim': {
+        #     'task_count': queue_esim.qsize(),
+        #     'ok': os.path.exists(esim_dev),
+        # },
     })
 
 
@@ -103,16 +103,16 @@ async def post_image_brother(request):
         return web.Response(status=400, text='No data received.')
 
 
-@routes.post('/image/esim')
-async def post_image_esim(request):
-    """Expecting raw PNG image data in POST request body."""
-    # Read incoming img to memory.
-    png_image_data = await request.content.read()
-    if png_image_data:
-        queue_esim.put(png_image_data)
-        return web.Response(text='Ok')
-    else:
-        return web.Response(status=400, text='No data received.')
+# @routes.post('/image/esim')
+# async def post_image_esim(request):
+#     """Expecting raw PNG image data in POST request body."""
+#     # Read incoming img to memory.
+#     png_image_data = await request.content.read()
+#     if png_image_data:
+#         queue_esim.put(png_image_data)
+#         return web.Response(text='Ok')
+#     else:
+#         return web.Response(status=400, text='No data received.')
 
 routes.static('/', '../frontend')
 

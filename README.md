@@ -14,7 +14,10 @@ We are running it on a Raspberry Pi Zero.
 
 ## Setup
 
-1. Boot your Raspberry Pi Zero
+1. Boot your Raspberry Pi Zero and install git:
+   ```
+   sudo apt install -y git
+   ```
 2. Checkout this repo on the Pi: 
    ```
    git clone https://github.com/makerspacelt/label-printer-service.git
