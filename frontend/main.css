@@ -42,6 +42,9 @@ label, .label {
     float: left;
     vertical-align: top;
 }
+#rotate-label-container {
+    display: none;
+}
 #label-text {
     margin: 1rem 0;
 }

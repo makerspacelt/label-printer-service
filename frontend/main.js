@@ -42,6 +42,8 @@ function main(CONFIGS) {
   const canvas = new fabric.Canvas('label-canvas')
 
   const configContainer = document.getElementById('printer-config-container')
+  const rotateLabelContainer = document.getElementById('rotate-label-container')
+  const rotateLabelEl = document.getElementById('rotate-label')
   const fontSelectEl = document.getElementById('font-select')
 
   const canvasContainer = document.getElementById('canvas-container')
@@ -71,6 +73,7 @@ function main(CONFIGS) {
   let labelHeight = 0
   let labelWidth = 0
   let labelFont = ''
+  let rotateLabel = false
   let textareaCount = 1
 
   for (const fontName of fontNames) {
@@ -105,6 +108,11 @@ function main(CONFIGS) {
       setConfig(currentConfig)
     }
     configContainer.appendChild(el)
+  })
+
+  rotateLabelEl.addEventListener('change', () => {
+    rotateLabel = rotateLabelEl.checked
+    updateLabelSize()
   })
 
   fontSelectEl.addEventListener('change', () => {
@@ -161,14 +169,45 @@ function main(CONFIGS) {
   })
 
   function setConfig(config) {
-    labelHeight = config.height
-    labelWidth = config.width || 0 // 0 is infinity!
+    labelFont = config.font
+    rotateLabelContainer.style.display = config.rotatable ? 'block' : 'none'
+    if (!config.rotatable) {
+      rotateLabel = false
+    }
+    fontSelectEl.value = labelFont
+    updateLabelSize()
+  } 
+
+  async function getFinalImage() {
+    if (rotateLabel) {
+      return new Promise((resolve) => {
+        const img = new Image()
+        img.onload = function() {
+          const rotatedCanvas = document.createElement('canvas')
+          const ctx = rotatedCanvas.getContext('2d')
+          rotatedCanvas.width = img.height
+          rotatedCanvas.height = img.width
+          ctx.rotate(Math.PI / 2)
+          ctx.drawImage(img, 0, -img.height)
+          resolve(rotatedCanvas.toDataURL('image/png'))
+        }
+        img.src = canvas.toDataURL('image/png')
+      })
+    }
+    else {
+      return canvas.toDataURL('image/png')
+    }
+  }
+
+  function updateLabelSize() {
+    const h = rotateLabel ? currentConfig.width : currentConfig.height
+    const w = rotateLabel ? currentConfig.height : currentConfig.width
+    labelHeight = h
+    labelWidth = w || 0 // 0 is infinity!
     labelCanvas.height = labelHeight
     labelCanvas.width = labelWidth
-    labelFont = currentConfig.font
-    fontSelectEl.value = labelFont
     updateCanvasThrottled()
-  } 
+  }
 
   function updatePrinterStatus() {
     const statusEls = document.querySelectorAll('.printer-status')
@@ -193,9 +232,9 @@ function main(CONFIGS) {
     xhr.send(null)
   }
 
-  function updatePreviewPNG() {
+  async function updatePreviewPNG() {
     previewImgContainer.style.display = 'block'
-    previewImg.src = canvas.toDataURL('image/png')
+    previewImg.src = await getFinalImage()
   }
 
   function updateCanvas() {
@@ -275,9 +314,9 @@ function main(CONFIGS) {
     }
   })
 
-  downloadBtn.addEventListener('click', () => {
+  downloadBtn.addEventListener('click', async () => {
     const link = document.createElement('a')
-    link.href = canvas.toDataURL('image/png')
+    link.href = await getFinalImage()
     link.download = 'label.png'
     link.click()
   })
@@ -285,7 +324,8 @@ function main(CONFIGS) {
   printBtn.addEventListener('click', async () => {
     printBtn.disabled = true
     printBtn.textContent = 'printing...'
-    const arrayBuffer = dataURLToArrayBuffer(canvas.toDataURL('image/png'))
+    const imageDataURL = await getFinalImage()
+    const arrayBuffer = dataURLToArrayBuffer(imageDataURL)
     try {
       await fetch(currentConfig.url, {
         method: 'POST',
