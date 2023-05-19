@@ -59,6 +59,14 @@ label, .label {
     margin: 1rem 0;
     display: none;
 }
+#main-flex {
+    display: flex;
+}
+#main-flex > #text-generation-container,
+#main-flex > #renderings-container {
+    flex: auto;
+    flex-wrap: wrap;
+}
 #renderings-container {
     display: flex;
     flex-wrap: wrap;
@@ -69,7 +77,6 @@ label, .label {
 }
 #canvas-container {
     display: none;
-    margin: 1rem 0;
 }
 #label-canvas {
     border: 1px solid #ccc;

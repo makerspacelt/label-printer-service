@@ -1,3 +1,5 @@
+let ENABLE_PREVIEW = false
+
 function throttle(fn, wait) {
   let lastCallAt = 0
   return function(...args) {
@@ -233,8 +235,10 @@ function main(CONFIGS) {
   }
 
   async function updatePreviewPNG() {
-    previewImgContainer.style.display = 'block'
-    previewImg.src = await getFinalImage()
+    if (ENABLE_PREVIEW) {
+      previewImgContainer.style.display = 'block'
+      previewImg.src = await getFinalImage()
+    }
   }
 
   function updateCanvas() {
@@ -246,39 +250,73 @@ function main(CONFIGS) {
     let maxWidth = 0
     let totalOffset = 0
 
+    // function createText(text, fontSize, left, top) {
+    //   return new fabric.IText(text, {
+    //     fontSize,
+    //     fontFamily: labelFont,
+    //     lineHeight: 1,
+    //     snapAngle: 15,
+    //     snapThreshold: 15,
+    //     left,
+    //     top,
+    //   })
+    // }
+
+    const isInfiniteWidth = labelWidth === 0
     for (const textarea of textareas) {
       const textLines = textarea.value.split('\n')
-      const lineHeight = Math.min(128, labelHeight / textLines.length)
+      const lineCount = textLines.length
+      const marginX = 20
 
-      textLines.forEach((line, index) => {
+      textLines.forEach((line, lineIndex) => {
+        if (!line) {
+          line = ' '
+        }
+        const lineHeight = labelHeight / textLines.length
         const text = new fabric.IText(line, {
-          fontSize: lineHeight,
+          fontSize: isInfiniteWidth ? lineHeight : 1,
           fontFamily: labelFont,
-          // fontWeight: 'bold',
-          // fontFamily: 'Arial',
           lineHeight: 1,
           snapAngle: 15,
           snapThreshold: 15,
-          left: totalOffset,
-          top: lineHeight * index,
         })
-        maxWidth = Math.max(maxWidth, text.getScaledWidth())
+
+        if (isInfiniteWidth) {
+          // Infinite width
+          maxWidth = Math.max(maxWidth, text.getScaledWidth())
+          text.set('left', totalOffset)
+          text.set('top', text.height * lineIndex)
+        }
+        else {
+          // Fixed width
+          while (text.getScaledWidth() < (labelWidth - marginX) && text.getScaledHeight() < lineHeight && text.fontSize < 2000) {
+            text.set('fontSize', text.fontSize + 1)
+          }
+          text.set('left', labelWidth / 2)
+          text.set('top', lineIndex * lineHeight + lineHeight / 2)
+          // text.set('top', text.fontSize / 2 + lineIndex * lineHeight)
+          text.set('originX', 'center')
+          text.set('originY', 'center')
+        }
+
         canvas.add(text)
       })
 
-      totalOffset += labelWidth > 0 ? labelOffset : maxWidth + labelOffset
-      maxWidth = 0
+      if (isInfiniteWidth) {
+        totalOffset += labelWidth > 0 ? labelOffset : maxWidth + labelOffset
+        maxWidth = 0
+      }
     }
 
     canvas.setHeight(labelHeight)
-    canvas.setWidth(labelWidth > 0 ? labelWidth : totalOffset)
+    canvas.setWidth(isInfiniteWidth ? totalOffset : labelWidth)
     canvas.renderAll()
 
     canvasContainer.style.display = 'block'
 
     updatePreviewPNGThrottled()
 
-    if (textareaCount > 1 && labelWidth <= 0) {
+    if (textareaCount > 1 && isInfiniteWidth) {
       globalOffsetContainer.style.display = 'block'
     }
     else {
