@@ -40,14 +40,13 @@ function main(CONFIGS) {
     'Karla Bold',
     'Source Sans Pro Regular',
     'Source Sans Pro Bold',
-    'Source Sans Pro Black',
   ]
   const canvas = new fabric.Canvas('label-canvas')
 
   const configContainer = document.getElementById('printer-config-container')
   const rotateLabelContainer = document.getElementById('rotate-label-container')
   const rotateLabelEl = document.getElementById('rotate-label')
-  const fontSelectEl = document.getElementById('font-select')
+  const fontSelectContainer = document.getElementById('font-select-container')
 
   const canvasContainer = document.getElementById('canvas-container')
   const labelCanvas = document.getElementById('label-canvas')
@@ -80,10 +79,11 @@ function main(CONFIGS) {
   let textareaCount = 1
 
   for (const fontName of fontNames) {
-    const option = document.createElement('option')
-    option.text = fontName
-    fontSelectEl.add(option)
+    fontSelectContainer.innerHTML += `
+      <label style="font-family: ${fontName};"><input type="radio" name="font-select" value="${fontName}"> ${fontName}</label>
+    `
   }
+  const fontSelectEl = document.getElementById('font-select')
 
   setConfig(currentConfig)
 
@@ -118,9 +118,11 @@ function main(CONFIGS) {
     updateLabelSize()
   })
 
-  fontSelectEl.addEventListener('change', () => {
-    labelFont = fontSelectEl.value
-    updateCanvasThrottled()
+  document.querySelectorAll('input[name="font-select"]').forEach(radioInput => {
+    radioInput.addEventListener('change', (event) => {
+      labelFont = event.target.value
+      updateCanvasThrottled()
+    })
   })
 
   globalOffsetInput.addEventListener('input', updateCanvasThrottled)
@@ -177,7 +179,7 @@ function main(CONFIGS) {
     if (!config.rotatable) {
       rotateLabel = false
     }
-    fontSelectEl.value = labelFont
+    document.querySelector(`input[name="font-select"][value="${labelFont}"]`).checked = true
     updateLabelSize()
   } 
 
