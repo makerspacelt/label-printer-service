@@ -267,7 +267,7 @@ function main(CONFIGS) {
     for (const textarea of textareas) {
       const textLines = textarea.value.split('\n')
       const lineCount = textLines.length
-      const marginX = 20
+      const marginX = 100
 
       textLines.forEach((line, lineIndex) => {
         if (!line) {
