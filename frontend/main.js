@@ -37,6 +37,7 @@ function dataURLToArrayBuffer(dataURL) {
 
 function main(CONFIGS) {
   const fontNames = [
+    'Karla Bold',
     'Source Sans Pro Regular',
     'Source Sans Pro Bold',
     'Source Sans Pro Black',

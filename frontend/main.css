@@ -109,3 +109,9 @@ label, .label {
   font-family: 'Source Sans Pro Black';
   src: url('fonts/SourceSansPro-Black.ttf') format('truetype');
 }
+
+@font-face {
+  font-family: 'Karla Bold';
+  src: url('fonts/Karla-Bold.ttf') format('truetype');
+}
+
