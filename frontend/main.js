@@ -35,7 +35,35 @@ function dataURLToArrayBuffer(dataURL) {
   return arrayBuffer
 }
 
+async function pdfToPNG(url, width, height) {
+  const pdf = await pdfjsLib.getDocument(url).promise
+  const page = await pdf.getPage(1)
+
+  const canvas = document.createElement("canvas")
+  const context = canvas.getContext("2d")
+  canvas.width = width || viewport.width
+  canvas.height = height || viewport.height
+
+  let viewport = page.getViewport({ scale: 1 })
+  const scale = Math.min(width / viewport.width, height / viewport.height)
+  viewport = page.getViewport({ scale })
+  await page.render({ canvasContext: context, viewport: viewport }).promise
+
+  return canvas.toDataURL()
+}
+
+function addImageToFabricCanvas(imageUrl, canvas) {
+  const fabricImg = fabric.Image.fromURL(imageUrl, (fabricImg) => {
+    canvas.add(fabricImg)
+    updatePreviewPNGThrottled()
+  }, {
+    snapAngle: 15,
+    snapThreshold: 15,
+  })
+}
+
 function main(CONFIGS) {
+  const supportedImagetypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf']
   const fontNames = [
     'Karla Bold',
     'Source Sans Pro Regular',
@@ -154,21 +182,26 @@ function main(CONFIGS) {
   loadImageBtn.addEventListener('click', () => {
     const input = document.createElement('input')
     input.type = 'file'
-    input.accept = 'image/jpeg, image/png, image/gif'
-    input.addEventListener('change', () => {
+    input.accept = supportedImagetypes.join(', ')
+    input.addEventListener('change', async () => {
       const file = input.files[0]
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.addEventListener('load', () => {
-        const imageUrl = reader.result
-        fabric.Image.fromURL(imageUrl, (fabricImg) => {
-          canvas.add(fabricImg)
-          updatePreviewPNGThrottled()
-        }, {
-          snapAngle: 15,
-          snapThreshold: 15,
+      if (!file) return
+      if (!supportedImagetypes.includes(file.type)) {
+        alert(`Please select a valid file. Supported types: ${input.accept}`)
+        return
+      }
+      if (file.type.includes('application/pdf')) {
+        const imageUrl = await pdfToPNG(URL.createObjectURL(file), labelWidth, labelHeight)
+        addImageToFabricCanvas(imageUrl, canvas)
+      }
+      else {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.addEventListener('load', () => {
+          const imageUrl = reader.result
+          addImageToFabricCanvas(imageUrl, canvas)
         })
-      })
+      }
     })
     input.click()
   })
@@ -217,7 +250,7 @@ function main(CONFIGS) {
   function updatePrinterStatus() {
     const statusEls = document.querySelectorAll('.printer-status')
     const xhr = new XMLHttpRequest()
-    xhr.open('GET', '/status', true);
+    xhr.open('GET', '/status', true)
     xhr.timeout = 2000
     xhr.onload = () => {
       if (xhr.status == 200) {
