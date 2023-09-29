@@ -28,8 +28,8 @@ const CONFIGS = [
         id: 'esim',
         name: 'Intermec PF8d (small)',
         font: 'Karla Bold',
-        width: 320,
-        height: 416,
+        width: 416,
+        height: 320,
         rotatable: true,
         photo: 'printer-intermec-pf8d.jpg',
         // PNG will be POSTed directly in request body
