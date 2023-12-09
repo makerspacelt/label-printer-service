@@ -312,6 +312,7 @@ function main(CONFIGS) {
         const text = new fabric.IText(line, {
           fontSize: isInfiniteWidth ? lineHeight : 1,
           fontFamily: labelFont,
+          _fontSizeMult: 1, // text line proportion to font size (pixels), default is 1.13
           lineHeight: 1,
           snapAngle: 15,
           snapThreshold: 15,
